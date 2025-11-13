@@ -1,4 +1,4 @@
-package com.os.guri.trabalho_disp_moveis.ui.notifications;
+package com.udesc.myapplication.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

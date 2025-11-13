@@ -1,4 +1,4 @@
-package com.os.guri.trabalho_disp_moveis;
+package com.udesc.myapplication;
 
 import org.junit.Test;
 

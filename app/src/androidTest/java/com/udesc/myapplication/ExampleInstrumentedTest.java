@@ -1,4 +1,4 @@
-package com.os.guri.trabalho_disp_moveis;
+package com.udesc.myapplication;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.os.guri.trabalho_disp_moveis", appContext.getPackageName());
+        assertEquals("com.udesc.myapplication", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.os.guri.trabalho_disp_moveis;
+package com.udesc.myapplication;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.os.guri.trabalho_disp_moveis.databinding.ActivityMainBinding;
+import com.udesc.myapplication.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 

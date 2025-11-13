@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Trabalho_Disp_Moveis"
-include(":app")
- 
+rootProject.name = "Trabalho dispositivos móvies"
+include ':app'

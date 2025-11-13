@@ -1,4 +1,4 @@
-package com.os.guri.trabalho_disp_moveis.ui.home;
+package com.udesc.myapplication.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.os.guri.trabalho_disp_moveis.databinding.FragmentHomeBinding;
+import com.udesc.myapplication.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 
