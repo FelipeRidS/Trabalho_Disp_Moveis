@@ -1,6 +1,8 @@
 package com.udesc.myapplication;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -15,6 +17,7 @@ import com.udesc.myapplication.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private boolean toggled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +33,17 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    public void testes(View view) {
+        toggled = !toggled;
+        Button button = (Button) view;
+        if (toggled) {
+            button.setText("Toggled");
+        } else {
+            button.setText("Not toggled");
+        }
+    }
 }
