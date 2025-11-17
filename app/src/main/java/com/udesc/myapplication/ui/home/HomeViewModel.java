@@ -1,32 +1,33 @@
 package com.udesc.myapplication.ui.home;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.udesc.myapplication.DTOs.ExercicioDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
-    private final MutableLiveData<List<ExerciseDTO>> mExercises;
+    private final MutableLiveData<List<ExercicioDTO>> mExercises;
 
     public HomeViewModel() {
         mExercises = new MutableLiveData<>();
-        var exercises = new ArrayList<ExerciseDTO>();
-        var exerciseOne = new ExerciseDTO();
+        var exercises = new ArrayList<ExercicioDTO>();
+        var exerciseOne = new ExercicioDTO();
 
-        exerciseOne.setDescription("descrição do exercício 1");
+        exerciseOne.setDescricao("descrição do exercício 1");
         exerciseOne.setId(1L);
-        exerciseOne.setMuscularGroupId(1L);
-        exerciseOne.setMuscularGroupName("Perna");
-        exerciseOne.setName("Exercício 1");
+        exerciseOne.setIdGrupoMuscular(1L);
+        exerciseOne.setNomeGrupoMuscular("Perna");
+        exerciseOne.setNome("Exercício 1");
 
-        var exerciseTwo = new ExerciseDTO();
-        exerciseTwo.setDescription("descrição do exercício 2");
+        var exerciseTwo = new ExercicioDTO();
+        exerciseTwo.setDescricao("descrição do exercício 2");
         exerciseTwo.setId(1L);
-        exerciseTwo.setMuscularGroupId(1L);
-        exerciseTwo.setMuscularGroupName("Perna");
-        exerciseTwo.setName("Exercício 2");
+        exerciseTwo.setIdGrupoMuscular(1L);
+        exerciseTwo.setNomeGrupoMuscular("Perna");
+        exerciseTwo.setNome("Exercício 2");
 
         exercises.add(exerciseOne);
         exercises.add(exerciseTwo);
@@ -34,5 +35,5 @@ public class HomeViewModel extends ViewModel {
         mExercises.setValue(exercises);
     }
 
-    public MutableLiveData<List<ExerciseDTO>> getExercises() { return mExercises; }
+    public MutableLiveData<List<ExercicioDTO>> getExercises() { return mExercises; }
 }
