@@ -1,5 +1,6 @@
 package com.udesc.myapplication.ui.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -15,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.helpers.Navigator;
+import com.udesc.myapplication.ui.cadastrousuario.CadastroActivity;
 
 public class Login extends AppCompatActivity {
 
@@ -52,5 +54,10 @@ public class Login extends AppCompatActivity {
         // É uma abstração da lógica dos intents, se a gente precisar de lógicas
         // mais avançadas a gente deleta essa parte e usa puro mesmo
         Navigator.callActivity(this, MainActivity.class);
+    }
+
+    public void cadastroUsuario(View v) {
+        Intent i = new Intent(this, CadastroActivity.class);
+        startActivity(i);
     }
 }
