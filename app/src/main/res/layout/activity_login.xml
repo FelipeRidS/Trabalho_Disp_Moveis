@@ -61,6 +61,14 @@
             android:onClick="entrar"
             android:text="Entrar" />
 
+        <Button
+            android:id="@+id/buttonTemp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="entrarTeste"
+            android:text="Entrar (TESTE)"
+            android:backgroundTint="#FF9800" />
+
         <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"

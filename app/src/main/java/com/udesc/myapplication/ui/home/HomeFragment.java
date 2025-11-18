@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.udesc.myapplication.DTOs.ExercicioDTO;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentHomeBinding;
 
@@ -48,7 +49,7 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private LinearLayout createExerciseCard(Context exercisesContainerContext, ExerciseDTO exerciseDto) {
+    private LinearLayout createExerciseCard(Context exercisesContainerContext, ExercicioDTO exercicioDto) {
         var res = getResources();
         var exerciseLayout = new LinearLayout(exercisesContainerContext);
         var context = exerciseLayout.getContext();
@@ -60,11 +61,11 @@ public class HomeFragment extends Fragment {
         exerciseLayout.setOrientation(LinearLayout.VERTICAL);
 
         var titleView = new TextView(context);
-        titleView.setText(exerciseDto.getName());
+        titleView.setText(exercicioDto.getNome());
         titleView.setTextSize(16);
 
         var muscularGroupNameView = new TextView(context);
-        muscularGroupNameView.setText(exerciseDto.getMuscularGroupName());
+        muscularGroupNameView.setText(exercicioDto.getNomeGrupoMuscular());
         muscularGroupNameView.setPadding(0, 6, 0, 20);
 
         var startButton = new Button(context);
