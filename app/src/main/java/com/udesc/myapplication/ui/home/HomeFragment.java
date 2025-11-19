@@ -15,8 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.udesc.myapplication.DTOs.ExercicioDTO;
+import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentHomeBinding;
+import com.udesc.myapplication.helpers.Navigator;
 
 public class HomeFragment extends Fragment {
 
@@ -74,6 +76,12 @@ public class HomeFragment extends Fragment {
         startButton.setText(R.string.button_start_routine);
         startButton.setBackgroundTintList(res.getColorStateList(R.color.purple_500, context.getTheme()));
         startButton.setTextColor(res.getColorStateList(R.color.white, context.getTheme()));
+        startButton.setOnClickListener((View v) -> {
+            Bundle b = new Bundle();
+            Gson gson = new Gson();
+            b.putString("exercicioJson",gson.toJson(exercicioDto));
+            Navigator.callActivity(this.getContext(), MainActivity.class, b); // Futura tela de execução de exercício
+        });
 
         exerciseLayout.addView(titleView);
         exerciseLayout.addView(muscularGroupNameView);

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.udesc.myapplication.R; // Importe seu Rn
+import com.udesc.myapplication.helpers.Navigator;
 import com.udesc.myapplication.ui.login.Login;
 
 public class PerfilFragment extends Fragment {
@@ -74,13 +75,6 @@ public class PerfilFragment extends Fragment {
         Toast.makeText(getActivity(), "Logout realizado com sucesso!", Toast.LENGTH_SHORT).show();
 
         // Redireciona para a tela de Login
-        // Substitua 'Login.class' pelo nome correto da sua Activity de login.
-        Intent intent = new Intent(getActivity(), Login.class);
-
-        // Flags para limpar o histórico de telas
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(intent);
-        // Não é necessário chamar finish() no fragment, pois a activity que o contém será finalizada pelo intent.
+        Navigator.setActivity(getActivity(), Login.class);
     }
 }

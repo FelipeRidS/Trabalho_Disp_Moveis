@@ -1,6 +1,5 @@
 package com.udesc.myapplication.ui.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -83,7 +82,7 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Bem-vindo, " + usuario.getNome(), Toast.LENGTH_SHORT).show();
 
                     // Navegar para a MainActivity
-                    Navigator.callActivity(Login.this, MainActivity.class);
+                    Navigator.setActivity(Login.this, MainActivity.class);
                     finish(); // Fecha a atividade de Login
                 } else {
                     // Falha no login (ex: 401 Não Autorizado)
@@ -126,7 +125,6 @@ public class Login extends AppCompatActivity {
     }
 
     public void cadastroUsuario(View v) {
-        Intent i = new Intent(this, CadastroActivity.class);
-        startActivity(i);
+        Navigator.callActivity(this, CadastroActivity.class);
     }
 }
