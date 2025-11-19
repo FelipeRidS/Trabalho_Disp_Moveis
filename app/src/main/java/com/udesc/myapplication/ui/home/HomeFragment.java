@@ -1,6 +1,7 @@
 package com.udesc.myapplication.ui.home;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class HomeFragment extends Fragment {
         var titleView = new TextView(context);
         titleView.setText(exercicioDto.getNome());
         titleView.setTextSize(16);
+        titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
 
         var muscularGroupNameView = new TextView(context);
         muscularGroupNameView.setText(exercicioDto.getNomeGrupoMuscular());
