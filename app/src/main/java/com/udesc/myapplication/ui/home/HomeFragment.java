@@ -78,9 +78,9 @@ public class HomeFragment extends Fragment {
         startButton.setTextColor(res.getColorStateList(R.color.white, context.getTheme()));
         startButton.setOnClickListener((View v) -> {
             Bundle b = new Bundle();
-            Gson gson = new Gson();
-            b.putString("exercicioJson",gson.toJson(exercicioDto));
-            Navigator.callActivity(this.getContext(), MainActivity.class, b); // Futura tela de execução de exercício
+//            Gson gson = new Gson();
+//            b.putString("exercicioJson",gson.toJson(exercicioDto));
+//            Navigator.callActivity(this.getContext(), MainActivity.class, b); // Futura tela de execução de exercício
         });
 
         exerciseLayout.addView(titleView);
