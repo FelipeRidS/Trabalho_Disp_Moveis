@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,13 +23,7 @@ import com.udesc.myapplication.helpers.Navigator;
 import com.udesc.myapplication.ui.cadastrousuario.CadastroActivity;
 import com.udesc.myapplication.model.LoginRequest;
 import com.udesc.myapplication.model.Usuario;
-import com.udesc.myapplication.network.ApiService;
 import com.udesc.myapplication.network.RetrofitClient;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,7 +34,6 @@ public class Login extends AppCompatActivity {
     private EditText usuarioInptView;
     private EditText senhaInptView;
     private Button loginButton;
-    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +52,14 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-
-
-        // Inicializar views e serviço
+        // Inicializar views
         usuarioInptView = findViewById(R.id.editTextText4);
         senhaInptView = findViewById(R.id.editTextTextPassword4);
         loginButton = findViewById(R.id.button5);
-
-        // Obter instância do ApiService
-        apiService = RetrofitClient.getClient().create(ApiService.class);
     }
 
     public void entrar(View v) {
-        String email = usuarioInptView.getText().toString(); // O backend espera um email
+        String email = usuarioInptView.getText().toString();
         String senha = senhaInptView.getText().toString();
 
         // Validação simples
@@ -87,8 +74,8 @@ public class Login extends AppCompatActivity {
         // Criar objeto de requisição
         LoginRequest loginRequest = new LoginRequest(email, senha);
 
-        // Fazer a chamada de rede assíncrona
-        apiService.login(loginRequest).enqueue(new Callback<Usuario>() {
+        // Fazer a chamada de rede assíncrona usando RetrofitClient
+        RetrofitClient.getApiService().login(loginRequest).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
                 // Reabilitar UI
@@ -110,7 +97,7 @@ public class Login extends AppCompatActivity {
 
                     // Navegar para a MainActivity
                     Navigator.setActivity(Login.this, MainActivity.class);
-                    finish(); // Fecha a atividade de Login
+                    finish();
                 } else {
                     // Falha no login (ex: 401 Não Autorizado)
                     Toast.makeText(Login.this, "Usuário ou senha inválidos", Toast.LENGTH_LONG).show();
@@ -155,7 +142,6 @@ public class Login extends AppCompatActivity {
         editor.putString("dataNascimento", "10/10/2010");
         editor.apply();
 
-        // Fecha a atividade de Login para que o usuário não volte para ela
         finish();
     }
 

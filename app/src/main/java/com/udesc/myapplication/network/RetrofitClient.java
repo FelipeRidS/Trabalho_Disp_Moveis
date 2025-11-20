@@ -30,4 +30,8 @@ public class RetrofitClient {
         }
         return retrofit;
     }
+
+    public static ApiService getApiService() {
+        return getClient().create(ApiService.class);
+    }
 }
