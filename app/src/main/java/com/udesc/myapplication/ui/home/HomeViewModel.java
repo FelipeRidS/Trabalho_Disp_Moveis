@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.udesc.myapplication.DTOs.TreinoDTO;
 import com.udesc.myapplication.model.BaseViewModel;
-import com.udesc.myapplication.network.ApiService;
 import com.udesc.myapplication.network.RetrofitClient;
 
 import java.util.List;
@@ -16,37 +15,10 @@ import retrofit2.Response;
 
 public class HomeViewModel extends BaseViewModel {
     private final MutableLiveData<List<TreinoDTO>> mTrainings = new MutableLiveData<>();
-    private final ApiService apiService = RetrofitClient.getApiService();
-
     public HomeViewModel() {
         setLoading(true);
 
-        apiService.exercicios().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<List<ExercicioDTO>> call, @NonNull Response<List<ExercicioDTO>> response) {
-                setLoading(false);
-
-                if (response.isSuccessful() && response.body() != null) {
-                    mExercises.setValue(response.body());
-                } else {
-                    setError(response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<ExercicioDTO>> call, @NonNull Throwable t) {
-                setLoading(false);
-                setError(t.getMessage());
-            }
-        });
-    }
-
-    public MutableLiveData<List<TreinoDTO>> getTrainings() {
-        return mTrainings;
-    }
-
-    public void fetch() {
-        apiService.treinos().enqueue(new Callback<List<TreinoDTO>>() {
+        RetrofitClient.getApiService().treinos().enqueue(new Callback<List<TreinoDTO>>() {
             @Override
             public void onResponse(@NonNull Call<List<TreinoDTO>> call, @NonNull Response<List<TreinoDTO>> response) {
                 setLoading(false);
@@ -64,5 +36,9 @@ public class HomeViewModel extends BaseViewModel {
                 setError(t.getMessage());
             }
         });
+    }
+
+    public MutableLiveData<List<TreinoDTO>> getTrainings() {
+        return mTrainings;
     }
 }

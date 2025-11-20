@@ -22,8 +22,11 @@ public interface ApiService {
     @POST("usuario")
     Call<Usuario> cadastroUsuario(@Body CadastroUsuario loginRequest);
 
+    @GET("treino")
+    Call<List<TreinoDTO>> treinos();
+
     @GET("execucao-treino")
-    Call<List<ExecucaoTreinoDTO>> treinos();
+    Call<List<ExecucaoTreinoDTO>> execucaoTreinos();
 
     @GET("exercicio")
     Call<List<ExercicioDTO>> exercicios();

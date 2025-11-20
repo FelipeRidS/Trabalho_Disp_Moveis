@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.udesc.myapplication.DTOs.ExecucaoTreinoDTO;
-import com.udesc.myapplication.DTOs.TreinoDTO;
 import com.udesc.myapplication.model.BaseViewModel;
-import com.udesc.myapplication.network.ApiService;
 import com.udesc.myapplication.network.RetrofitClient;
 
 import java.util.List;
@@ -17,12 +15,11 @@ import retrofit2.Response;
 
 public class DashboardViewModel extends BaseViewModel {
     private final MutableLiveData<List<ExecucaoTreinoDTO>> mTrainings = new MutableLiveData<>();
-    private ApiService apiService = RetrofitClient.getApiService();
 
     public DashboardViewModel() {
         setLoading(true);
 
-        apiService.treinos().enqueue(new Callback<>() {
+        RetrofitClient.getApiService().execucaoTreinos().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Response<List<ExecucaoTreinoDTO>> response) {
                 setLoading(false);
