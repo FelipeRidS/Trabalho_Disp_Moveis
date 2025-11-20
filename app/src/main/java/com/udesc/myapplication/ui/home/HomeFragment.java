@@ -59,8 +59,6 @@ public class HomeFragment extends Fragment {
             Log.e("HomeFragment", errorMessage);
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         });
-
-        viewModel.fetch();
     }
 
     private LinearLayout createExerciseCard(Context exercisesContainerContext, ExercicioDTO exercicioDto) {

@@ -55,8 +55,6 @@ public class DashboardFragment extends Fragment {
             Log.e("DashboardFragment", errorMessage);
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         });
-
-        dashboardViewModel.fetch();
     }
 
     private LinearLayout createTrainingCard(Context trainingsContainerContext, ExecucaoTreinoDTO trainingDto) {

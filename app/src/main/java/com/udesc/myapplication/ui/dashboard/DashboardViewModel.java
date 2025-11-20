@@ -21,11 +21,7 @@ public class DashboardViewModel extends BaseViewModel {
 
     public DashboardViewModel() {
         setLoading(true);
-    }
 
-    public MutableLiveData<List<ExecucaoTreinoDTO>> getTrainings() { return mTrainings; }
-
-    public void fetch() {
         apiService.treinos().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Response<List<ExecucaoTreinoDTO>> response) {
@@ -45,4 +41,6 @@ public class DashboardViewModel extends BaseViewModel {
             }
         });
     }
+
+    public MutableLiveData<List<ExecucaoTreinoDTO>> getTrainings() { return mTrainings; }
 }

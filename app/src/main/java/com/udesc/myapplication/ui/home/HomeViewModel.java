@@ -23,11 +23,7 @@ public class HomeViewModel extends BaseViewModel {
 
     public HomeViewModel() {
         setLoading(true);
-    }
 
-    public MutableLiveData<List<ExercicioDTO>> getExercises() { return mExercises; }
-
-    public void fetch() {
         apiService.exercicios().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ExercicioDTO>> call, @NonNull Response<List<ExercicioDTO>> response) {
@@ -47,4 +43,6 @@ public class HomeViewModel extends BaseViewModel {
             }
         });
     }
+
+    public MutableLiveData<List<ExercicioDTO>> getExercises() { return mExercises; }
 }
