@@ -67,6 +67,10 @@ public class HomeFragment extends Fragment {
     private View createTrainingCard(Context context, TreinoDTO treinoDto) {
         View cardView = LayoutInflater.from(context).inflate(R.layout.training_card, null, false);
 
+        var layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.bottomMargin = 20;
+        cardView.setLayoutParams(layoutParams);
+
         TextView titleView = cardView.findViewById(R.id.training_title);
         TextView dateView = cardView.findViewById(R.id.training_date);
         Button btnViewDetails = cardView.findViewById(R.id.btn_view_details);
