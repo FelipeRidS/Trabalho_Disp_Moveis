@@ -3,8 +3,10 @@ package com.udesc.myapplication.network;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.udesc.myapplication.adapters.LocalDateAdapter;
+import com.udesc.myapplication.adapters.LocalDateTimeAdapter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,13 +22,15 @@ public class RetrofitClient {
 
     public static Retrofit getClient() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
+            .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
+
         if (retrofit == null) {
             retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
         }
         return retrofit;
     }

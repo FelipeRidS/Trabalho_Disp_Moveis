@@ -1,5 +1,6 @@
 package com.udesc.myapplication.network;
 
+import com.udesc.myapplication.DTOs.ExecucaoTreinoDTO;
 import com.udesc.myapplication.model.CadastroUsuario;
 import com.udesc.myapplication.DTOs.ExercicioDTO;
 import com.udesc.myapplication.DTOs.TreinoDTO;
@@ -21,8 +22,8 @@ public interface ApiService {
     @POST("usuario")
     Call<Usuario> cadastroUsuario(@Body CadastroUsuario loginRequest);
 
-    @GET("treino")
-    Call<List<TreinoDTO>> treinos();
+    @GET("execucao-treino")
+    Call<List<ExecucaoTreinoDTO>> treinos();
 
     @GET("exercicio")
     Call<List<ExercicioDTO>> exercicios();
