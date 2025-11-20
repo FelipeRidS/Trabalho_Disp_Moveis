@@ -1,15 +1,21 @@
 package com.udesc.myapplication.ui.home;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.udesc.myapplication.DTOs.ExercicioDTO;
+import com.udesc.myapplication.DTOs.TreinoDTO;
+import com.udesc.myapplication.model.BaseViewModel;
+import com.udesc.myapplication.network.ApiService;
+import com.udesc.myapplication.network.RetrofitClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
-    private final MutableLiveData<List<ExercicioDTO>> mExercises;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HomeViewModel extends BaseViewModel {
+    private final MutableLiveData<List<TreinoDTO>> mTrainings = new MutableLiveData<>();
+    private final ApiService apiService = RetrofitClient.getApiService();
 
     public HomeViewModel() {
         mExercises = new MutableLiveData<>();
@@ -35,5 +41,28 @@ public class HomeViewModel extends ViewModel {
         mExercises.setValue(exercises);
     }
 
-    public MutableLiveData<List<ExercicioDTO>> getExercises() { return mExercises; }
+    public MutableLiveData<List<TreinoDTO>> getTrainings() {
+        return mTrainings;
+    }
+
+    public void fetch() {
+        apiService.treinos().enqueue(new Callback<List<TreinoDTO>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<TreinoDTO>> call, @NonNull Response<List<TreinoDTO>> response) {
+                setLoading(false);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mTrainings.setValue(response.body());
+                } else {
+                    setError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<TreinoDTO>> call, @NonNull Throwable t) {
+                setLoading(false);
+                setError(t.getMessage());
+            }
+        });
+    }
 }

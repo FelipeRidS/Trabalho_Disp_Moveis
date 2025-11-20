@@ -1,7 +1,7 @@
 package com.udesc.myapplication.ui.home;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.udesc.myapplication.DTOs.ExercicioDTO;
-import com.udesc.myapplication.MainActivity;
+import com.udesc.myapplication.DTOs.TreinoDTO;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentHomeBinding;
-import com.udesc.myapplication.helpers.Navigator;
+import com.udesc.myapplication.ui.treino.DetalhesTreinoActivity;
+import com.udesc.myapplication.ui.treino.IniciarTreinoActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -34,17 +34,18 @@ public class HomeFragment extends Fragment {
         final TextView myRoutinesTextView = binding.myRoutines;
         final LinearLayout exercisesContainer = binding.exercisesContainer;
 
-        viewModel.getExercises().observe(
+        viewModel.getTrainings().observe(
             getViewLifecycleOwner(),
-            exerciseDtos -> {
-                myRoutinesTextView.setText(res.getString(R.string.my_routines, exerciseDtos.size()));
+            trainings -> {
+                myRoutinesTextView.setText(res.getString(R.string.my_routines, trainings.size()));
+                exercisesContainer.removeAllViews();
 
-                for (var exerciseDto : exerciseDtos) {
-                    var exerciseCard = createExerciseCard(
-                        exercisesContainer.getContext(), exerciseDto
+                for (var training : trainings) {
+                    var trainingCard = createTrainingCard(
+                        exercisesContainer.getContext(), training
                     );
 
-                    exercisesContainer.addView(exerciseCard);
+                    exercisesContainer.addView(trainingCard);
                 }
             }
         );
@@ -52,42 +53,37 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private LinearLayout createExerciseCard(Context exercisesContainerContext, ExercicioDTO exercicioDto) {
-        var res = getResources();
-        var exerciseLayout = new LinearLayout(exercisesContainerContext);
-        var context = exerciseLayout.getContext();
+    private View createTrainingCard(Context context, TreinoDTO treinoDto) {
+        View cardView = LayoutInflater.from(context).inflate(R.layout.training_card, null, false);
 
-        var layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.bottomMargin = 20;
-        exerciseLayout.setLayoutParams(layoutParams);
-        exerciseLayout.setBackgroundResource(R.drawable.rounded_countainer);
-        exerciseLayout.setOrientation(LinearLayout.VERTICAL);
+        TextView titleView = cardView.findViewById(R.id.training_title);
+        TextView dateView = cardView.findViewById(R.id.training_date);
+        Button btnViewDetails = cardView.findViewById(R.id.btn_view_details);
+        Button btnStartRoutine = cardView.findViewById(R.id.btn_start_routine);
 
-        var titleView = new TextView(context);
-        titleView.setText(exercicioDto.getNome());
-        titleView.setTextSize(16);
-        titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
+        titleView.setText(treinoDto.getNomeTreino());
+        if (treinoDto.getDataCriacao() != null) {
+            dateView.setText(treinoDto.getDataCriacao().toString());
+        }
 
-        var muscularGroupNameView = new TextView(context);
-        muscularGroupNameView.setText(exercicioDto.getNomeGrupoMuscular());
-        muscularGroupNameView.setPadding(0, 6, 0, 20);
-
-        var startButton = new Button(context);
-        startButton.setText(R.string.button_start_routine);
-        startButton.setBackgroundTintList(res.getColorStateList(R.color.purple_500, context.getTheme()));
-        startButton.setTextColor(res.getColorStateList(R.color.white, context.getTheme()));
-        startButton.setOnClickListener((View v) -> {
-            Bundle b = new Bundle();
-//            Gson gson = new Gson();
-//            b.putString("exercicioJson",gson.toJson(exercicioDto));
-//            Navigator.callActivity(this.getContext(), MainActivity.class, b); // Futura tela de execução de exercício
+        // Botão Ver Detalhes
+        btnViewDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DetalhesTreinoActivity.class);
+            intent.putExtra(DetalhesTreinoActivity.EXTRA_TREINO_ID, treinoDto.getIdTreino());
+            intent.putExtra(DetalhesTreinoActivity.EXTRA_TREINO_NOME, treinoDto.getNomeTreino());
+            intent.putExtra(DetalhesTreinoActivity.EXTRA_TREINO_DATA, treinoDto.getDataCriacao());
+            startActivity(intent);
         });
 
-        exerciseLayout.addView(titleView);
-        exerciseLayout.addView(muscularGroupNameView);
-        exerciseLayout.addView(startButton);
+        // Botão Iniciar Rotina
+        btnStartRoutine.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), IniciarTreinoActivity.class);
+            intent.putExtra(IniciarTreinoActivity.EXTRA_TREINO_ID, treinoDto.getIdTreino());
+            intent.putExtra(IniciarTreinoActivity.EXTRA_TREINO_NOME, treinoDto.getNomeTreino());
+            startActivity(intent);
+        });
 
-        return exerciseLayout;
+        return cardView;
     }
 
     @Override

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Trabalho dispositivos móvies</string>
     <string name="title_home">Rotinas</string>
-    <string name="title_dashboard">Treinos</string>
+    <string name="title_dashboard">Histórico</string>
     <string name="title_notifications">Perfil</string>
     <string name="button_explore">Explorar</string>
     <string name="button_start_routine">Iniciar Rotina</string>
