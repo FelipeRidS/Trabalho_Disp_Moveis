@@ -15,10 +15,18 @@
         android:theme="@style/Theme.TrabalhoDispositivosMóvies"
         tools:targetApi="31"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".services.TreinoTimerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <activity android:name=".ui.cadastrousuario.CadastroActivity"/>
+
         <activity
             android:name=".ui.createaccount.CreateAccount"
             android:exported="false" />
+
         <activity
             android:name=".ui.login.Login"
             android:exported="true">
@@ -28,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />

@@ -13,6 +13,8 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface ApiService {
 
@@ -25,8 +27,14 @@ public interface ApiService {
     @GET("treino")
     Call<List<TreinoDTO>> treinos();
 
+    @GET("treino/{id}")
+    Call<TreinoDTO> treinoPorId(@Path("id") Long id);
+
     @GET("execucao-treino")
     Call<List<ExecucaoTreinoDTO>> execucaoTreinos();
+
+    @POST("execucao-treino")
+    Call<ExecucaoTreinoDTO> criarExecucaoTreino(@Body ExecucaoTreinoDTO execucao);
 
     @GET("exercicio")
     Call<List<ExercicioDTO>> exercicios();
