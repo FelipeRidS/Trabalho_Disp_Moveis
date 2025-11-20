@@ -15,6 +15,7 @@
         android:theme="@style/Theme.TrabalhoDispositivosMóvies"
         tools:targetApi="31"
         android:usesCleartextTraffic="true">
+        <activity android:name=".ui.cadastrousuario.CadastroActivity"/>
         <activity
             android:name=".ui.createaccount.CreateAccount"
             android:exported="false" />

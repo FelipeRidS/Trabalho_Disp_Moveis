@@ -76,6 +76,7 @@
             android:clickable="true"
             android:contextClickable="true"
             android:linksClickable="true"
+            android:onClick="cadastroUsuario"
             android:text="Cadastre-se"
             android:textAlignment="center"
             android:textColor="#0000EE" />

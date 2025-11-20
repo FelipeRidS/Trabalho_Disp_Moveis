@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Trabalho dispositivos móvies</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Rotinas</string>
+    <string name="title_dashboard">Treinos</string>
+    <string name="title_notifications">Perfil</string>
     <string name="button_explore">Explorar</string>
     <string name="button_start_routine">Iniciar Rotina</string>
     <string name="my_routines">Minhas Rotinas (%1$d)</string>
+    <string name="volume">Volume</string>
+    <string name="kg">%1$.1f kg</string>
+    <string name="exercicios">Exercícios</string>
+    <string name="button_view_training">Visualizar Treino</string>
 </resources>

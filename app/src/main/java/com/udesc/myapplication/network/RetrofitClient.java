@@ -8,7 +8,7 @@ public class RetrofitClient {
     // URL base do backend.
     // Se estiver usando o emulador Android, '10.0.2.2' é o alias para 'localhost' da máquina.
     // Ajustar a porta se o backend estiver rodando em uma porta diferente de 8080.
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = "http://10.0.2.2:8081/gestao-de-treinos/";
 
     private static Retrofit retrofit = null;
 

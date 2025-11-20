@@ -2,6 +2,8 @@ package com.udesc.myapplication.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.time.LocalDate;
+
 public class Usuario {
 
     @SerializedName("id")
@@ -12,6 +14,9 @@ public class Usuario {
 
     @SerializedName("email")
     private String email;
+
+    @SerializedName("dataNascimento")
+    private LocalDate dataNascimento;
 
     // Getters
     public Long getId() {
@@ -24,5 +29,9 @@ public class Usuario {
 
     public String getEmail() {
         return email;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
     }
 }
