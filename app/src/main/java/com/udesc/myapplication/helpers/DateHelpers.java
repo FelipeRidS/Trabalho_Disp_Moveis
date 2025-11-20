@@ -7,10 +7,14 @@ import java.util.Locale;
 
 public class DateHelpers {
     public static String format(LocalDate date) {
-        DateTimeFormatter mediumFormatter = DateTimeFormatter
-            .ofLocalizedDate(FormatStyle.MEDIUM)
-            .withLocale(Locale.getDefault());
+        DateTimeFormatter mediumFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         return date.format(mediumFormatter);
+    }
+
+    public static LocalDate parse(String date) {
+        DateTimeFormatter mediumFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        return LocalDate.parse(date, mediumFormatter);
     }
 }
