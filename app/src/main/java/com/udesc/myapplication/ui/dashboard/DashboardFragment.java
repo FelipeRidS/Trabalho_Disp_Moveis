@@ -4,18 +4,21 @@ import android.content.Context;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.udesc.myapplication.DTOs.TreinoDTO;
+import com.udesc.myapplication.DTOs.ExecucaoTreinoDTO;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentDashboardBinding;
 import com.udesc.myapplication.helpers.DateHelpers;
@@ -27,10 +30,15 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
-
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         final LinearLayout layout = binding.dashboardLayout;
 
@@ -43,10 +51,13 @@ public class DashboardFragment extends Fragment {
             }
         );
 
-        return root;
+        dashboardViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            Log.e("DashboardFragment", errorMessage);
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private LinearLayout createTrainingCard(Context trainingsContainerContext, TreinoDTO trainingDto) {
+    private LinearLayout createTrainingCard(Context trainingsContainerContext, ExecucaoTreinoDTO trainingDto) {
         var res = getResources();
         var trainingLayout = new LinearLayout(trainingsContainerContext);
         var context = trainingLayout.getContext();
@@ -58,12 +69,12 @@ public class DashboardFragment extends Fragment {
         trainingLayout.setOrientation(LinearLayout.VERTICAL);
 
         var titleView = new TextView(context);
-        titleView.setText(trainingDto.getNomeTreino());
+        titleView.setText(trainingDto.getNomeExecucaoTreino());
         titleView.setTextSize(16);
         titleView.setTypeface(titleView.getTypeface(), Typeface.BOLD);
 
         var dateView = new TextView(context);
-        dateView.setText(DateHelpers.format(trainingDto.getDataCriacao()));
+        dateView.setText(DateHelpers.format(trainingDto.getDataHoraExecucao()));
         dateView.setPadding(0, 6, 0, 20);
 
         var viewTrainingButton = new Button(context);
@@ -81,7 +92,7 @@ public class DashboardFragment extends Fragment {
         return trainingLayout;
     }
 
-    private LinearLayout createDetailsLayout(Context context, TreinoDTO trainingDto) {
+    private LinearLayout createDetailsLayout(Context context, ExecucaoTreinoDTO trainingDto) {
         var container = new LinearLayout(context);
         var res = getResources();
         var containerLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -109,7 +120,7 @@ public class DashboardFragment extends Fragment {
         return container;
     }
 
-    private static BigDecimal calculateVolumeKg(TreinoDTO trainingDto) {
+    private static BigDecimal calculateVolumeKg(ExecucaoTreinoDTO trainingDto) {
         BigDecimal totalVolume = BigDecimal.ZERO;
 
         for (var exercicio : trainingDto.getExercicios()) {

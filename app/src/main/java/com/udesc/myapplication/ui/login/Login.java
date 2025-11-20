@@ -3,6 +3,7 @@ package com.udesc.myapplication.ui.login;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
+import com.udesc.myapplication.helpers.DateHelpers;
 import com.udesc.myapplication.helpers.Navigator;
 import com.udesc.myapplication.ui.cadastrousuario.CadastroActivity;
 import com.udesc.myapplication.model.LoginRequest;
@@ -88,7 +90,7 @@ public class Login extends AppCompatActivity {
                     editor.putLong("id", usuario.getId());
                     editor.putString("nome", usuario.getNome());
                     editor.putString("email", usuario.getEmail());
-                    editor.putString("dataNascimento", usuario.getDataNascimento());
+                    editor.putString("dataNascimento", DateHelpers.format(usuario.getDataNascimento()));
                     editor.apply();
 
                     Toast.makeText(Login.this, "Bem-vindo, " + usuario.getNome(), Toast.LENGTH_SHORT).show();
@@ -106,7 +108,7 @@ public class Login extends AppCompatActivity {
             public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
                 // Reabilitar UI
                 setLoading(false);
-
+                Log.d("a", t.getMessage());
                 // Erro de rede (sem conexão, servidor offline, etc)
                 Toast.makeText(Login.this, "Erro de conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }

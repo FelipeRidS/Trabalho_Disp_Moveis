@@ -4,25 +4,43 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ExecucaoTreinoDTO {
-    private Long idTreino;
-    private String nomeTreino;
+    private Long idExecucaoTreino;
+    private Long idUsuario;
+    private String nomeUsuario;
+    private String nomeExecucaoTreino;
     private LocalDateTime dataHoraExecucao;
     private List<ExecucaoTreinoExercicioDTO> exercicios;
 
-    public Long getIdTreino() {
-        return idTreino;
+    public Long getIdExecucaoTreino() {
+        return idExecucaoTreino;
     }
 
-    public void setIdTreino(Long idTreino) {
-        this.idTreino = idTreino;
+    public void setIdExecucaoTreino(Long idExecucaoTreino) {
+        this.idExecucaoTreino = idExecucaoTreino;
     }
 
-    public String getNomeTreino() {
-        return nomeTreino;
+    public Long getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setNomeTreino(String nomeTreino) {
-        this.nomeTreino = nomeTreino;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getNomeUsuario() {
+        return nomeUsuario;
+    }
+
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
+    }
+
+    public String getNomeExecucaoTreino() {
+        return nomeExecucaoTreino;
+    }
+
+    public void setNomeExecucaoTreino(String nomeExecucaoTreino) {
+        this.nomeExecucaoTreino = nomeExecucaoTreino;
     }
 
     public LocalDateTime getDataHoraExecucao() {

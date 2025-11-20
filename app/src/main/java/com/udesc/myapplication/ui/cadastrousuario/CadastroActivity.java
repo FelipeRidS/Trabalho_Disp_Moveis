@@ -4,17 +4,32 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
+import com.udesc.myapplication.helpers.DateHelpers;
+import com.udesc.myapplication.helpers.Navigator;
+import com.udesc.myapplication.model.CadastroUsuario;
+import com.udesc.myapplication.model.Usuario;
+import com.udesc.myapplication.network.ApiService;
+import com.udesc.myapplication.network.RetrofitClient;
+import com.udesc.myapplication.ui.login.Login;
 
 import java.util.Calendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CadastroActivity extends AppCompatActivity {
 
@@ -24,6 +39,7 @@ public class CadastroActivity extends AppCompatActivity {
     private EditText editTextSenha;
     private EditText editTextConfirmarSenha;
     private Button buttonCadastrar;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +69,7 @@ public class CadastroActivity extends AppCompatActivity {
                 cadastrarUsuario();
             }
         });
+        apiService = RetrofitClient.getClient().create(ApiService.class);
     }
 
     private void mostrarSeletorDeData() {
@@ -105,21 +122,73 @@ public class CadastroActivity extends AppCompatActivity {
         // Por exemplo, enviar para um servidor web, salvar em um banco de dados local (SQLite),
         // ou usar o Firebase Authentication.
 
-        boolean deuCerto = true;
-        if (deuCerto) {
-            SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putLong("id", 345L); // TODO: vai vir do login
-            editor.putString("nome", nome);
-            editor.putString("email", email);
-            editor.putString("dataNascimento", dataNascimento);
-            editor.apply();
-        }
+        CadastroUsuario usuarioCadastro = new CadastroUsuario();
+        usuarioCadastro.setNome(nome);
+        usuarioCadastro.setDataNascimento(DateHelpers.parse(dataNascimento));
+        usuarioCadastro.setEmail(email);
+        usuarioCadastro.setSenha(senha);
+        setLoading(true);
+
+        String a = new Gson().toJson(usuarioCadastro);
+        Log.d("tag", a);
+
+        apiService.cadastroUsuario(usuarioCadastro).enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
+                // Reabilitar UI
+                setLoading(false);
+                Log.d("tag", "hmmmm");
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("tag", "hmmmm2");
+                    // Sucesso no login
+                    Usuario usuario = response.body();
+                    Log.d("tag", usuario.toString());
+
+                    SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putLong("id", usuario.getId());
+                    editor.putString("nome", usuario.getNome());
+                    editor.putString("email", usuario.getEmail());
+                    editor.putString("dataNascimento", usuario.getDataNascimento().toString());
+                    editor.apply();
+
+                    Toast.makeText(CadastroActivity.this, "Bem-vindo, " + usuario.getNome(), Toast.LENGTH_SHORT).show();
+
+                    // Navegar para a MainActivity
+                    Navigator.setActivity(CadastroActivity.this, MainActivity.class);
+                    finish(); // Fecha a atividade de Login
+                } else {
+                    // Falha no login (ex: 401 Não Autorizado)
+                    Toast.makeText(CadastroActivity.this, "Usuário ou senha inválidos", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
+                // Reabilitar UI
+                setLoading(false);
+
+                // Erro de rede (sem conexão, servidor offline, etc)
+                Toast.makeText(CadastroActivity.this, "Erro de conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         // Exemplo de mensagem de sucesso:
         Toast.makeText(this, "Usuário " + nome + " cadastrado com sucesso!", Toast.LENGTH_LONG).show();
 
         // Opcional: Após o cadastro, você pode limpar os campos ou fechar a tela
         // finish();
+    }
+
+    // Método auxiliar para controlar o estado de carregamento da UI
+    private void setLoading(boolean isLoading) {
+        buttonCadastrar.setText(isLoading ? "Carregando..." : "Entrar");
+        buttonCadastrar.setEnabled(!isLoading);
+        editTextNome.setEnabled(!isLoading);
+        editTextEmail.setEnabled(!isLoading);
+        editTextDataNascimento.setEnabled(!isLoading);
+        editTextSenha.setEnabled(!isLoading);
+        editTextConfirmarSenha.setEnabled(!isLoading);
     }
 }

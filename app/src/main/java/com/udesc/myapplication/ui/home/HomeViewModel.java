@@ -1,5 +1,6 @@
 package com.udesc.myapplication.ui.home;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.udesc.myapplication.DTOs.TreinoDTO;
@@ -18,27 +19,26 @@ public class HomeViewModel extends BaseViewModel {
     private final ApiService apiService = RetrofitClient.getApiService();
 
     public HomeViewModel() {
-        mExercises = new MutableLiveData<>();
-        var exercises = new ArrayList<ExercicioDTO>();
-        var exerciseOne = new ExercicioDTO();
+        setLoading(true);
 
-        exerciseOne.setDescricao("descrição do exercício 1");
-        exerciseOne.setId(1L);
-        exerciseOne.setIdGrupoMuscular(1L);
-        exerciseOne.setNomeGrupoMuscular("Perna");
-        exerciseOne.setNome("Exercício 1");
+        apiService.exercicios().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ExercicioDTO>> call, @NonNull Response<List<ExercicioDTO>> response) {
+                setLoading(false);
 
-        var exerciseTwo = new ExercicioDTO();
-        exerciseTwo.setDescricao("descrição do exercício 2");
-        exerciseTwo.setId(1L);
-        exerciseTwo.setIdGrupoMuscular(1L);
-        exerciseTwo.setNomeGrupoMuscular("Perna");
-        exerciseTwo.setNome("Exercício 2");
+                if (response.isSuccessful() && response.body() != null) {
+                    mExercises.setValue(response.body());
+                } else {
+                    setError(response.message());
+                }
+            }
 
-        exercises.add(exerciseOne);
-        exercises.add(exerciseTwo);
-
-        mExercises.setValue(exercises);
+            @Override
+            public void onFailure(@NonNull Call<List<ExercicioDTO>> call, @NonNull Throwable t) {
+                setLoading(false);
+                setError(t.getMessage());
+            }
+        });
     }
 
     public MutableLiveData<List<TreinoDTO>> getTrainings() {

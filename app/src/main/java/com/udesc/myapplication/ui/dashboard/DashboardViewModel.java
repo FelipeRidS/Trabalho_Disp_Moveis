@@ -1,55 +1,46 @@
 package com.udesc.myapplication.ui.dashboard;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.udesc.myapplication.DTOs.ExercicioSerieDTO;
+import com.udesc.myapplication.DTOs.ExecucaoTreinoDTO;
 import com.udesc.myapplication.DTOs.TreinoDTO;
-import com.udesc.myapplication.DTOs.TreinoExercicioDTO;
+import com.udesc.myapplication.model.BaseViewModel;
+import com.udesc.myapplication.network.ApiService;
+import com.udesc.myapplication.network.RetrofitClient;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardViewModel extends ViewModel {
-    private final MutableLiveData<List<TreinoDTO>> mTrainings;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DashboardViewModel extends BaseViewModel {
+    private final MutableLiveData<List<ExecucaoTreinoDTO>> mTrainings = new MutableLiveData<>();
+    private ApiService apiService = RetrofitClient.getApiService();
 
     public DashboardViewModel() {
-        mTrainings = new MutableLiveData<>();
-        var trainings = new ArrayList<TreinoDTO>();
-        var trainingOne = new TreinoDTO();
-        var exercicios = new ArrayList<TreinoExercicioDTO>();
+        setLoading(true);
 
-        var treinoExercicioOne = new TreinoExercicioDTO();
-        var exerciciosSerie = new ArrayList<ExercicioSerieDTO>();
+        apiService.treinos().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Response<List<ExecucaoTreinoDTO>> response) {
+                setLoading(false);
 
-        var exercicioSerie = new ExercicioSerieDTO();
-        exercicioSerie.setCarga(new BigDecimal(12.5));
-        exercicioSerie.setRepeticoes(3);
-        exerciciosSerie.add(exercicioSerie);
+                if (response.isSuccessful() && response.body() != null) {
+                    mTrainings.setValue(response.body());
+                } else {
+                    setError(response.message());
+                }
+            }
 
-        treinoExercicioOne.setSeries(exerciciosSerie);
-        exercicios.add(treinoExercicioOne);
-
-        trainingOne.setNomeTreino("Treino de peito");
-        trainingOne.setDataCriacao(LocalDate.now());
-        trainingOne.setExercicios(exercicios);
-        trainingOne.setIdTreino(1L);
-
-        var trainingTwo = new TreinoDTO();
-        trainingTwo.setNomeTreino("Treino de perna");
-        trainingTwo.setDataCriacao(LocalDate.now());
-        trainingTwo.setExercicios(new ArrayList<>());
-        trainingTwo.setIdTreino(1L);
-
-        trainings.add(trainingOne);
-        trainings.add(trainingTwo);
-
-        mTrainings.setValue(trainings);
+            @Override
+            public void onFailure(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Throwable t) {
+                setLoading(false);
+                setError(t.getMessage());
+            }
+        });
     }
 
-    public MutableLiveData<List<TreinoDTO>> getTrainings() {
-        return mTrainings;
-    }
+    public MutableLiveData<List<ExecucaoTreinoDTO>> getTrainings() { return mTrainings; }
 }
