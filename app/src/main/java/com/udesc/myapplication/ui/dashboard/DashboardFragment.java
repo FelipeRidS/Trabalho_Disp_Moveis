@@ -4,14 +4,17 @@ import android.content.Context;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,10 +30,15 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
-
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         final LinearLayout layout = binding.dashboardLayout;
 
@@ -43,7 +51,12 @@ public class DashboardFragment extends Fragment {
             }
         );
 
-        return root;
+        dashboardViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            Log.e("DashboardFragment", errorMessage);
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        });
+
+        dashboardViewModel.fetch();
     }
 
     private LinearLayout createTrainingCard(Context trainingsContainerContext, TreinoDTO trainingDto) {

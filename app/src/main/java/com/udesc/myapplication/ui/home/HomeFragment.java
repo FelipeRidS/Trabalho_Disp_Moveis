@@ -3,33 +3,39 @@ package com.udesc.myapplication.ui.home;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.udesc.myapplication.DTOs.ExercicioDTO;
-import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentHomeBinding;
-import com.udesc.myapplication.helpers.Navigator;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         var viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         var res = getResources();
-
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         final TextView myRoutinesTextView = binding.myRoutines;
         final LinearLayout exercisesContainer = binding.exercisesContainer;
@@ -49,7 +55,12 @@ public class HomeFragment extends Fragment {
             }
         );
 
-        return root;
+        viewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            Log.e("HomeFragment", errorMessage);
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        });
+
+        viewModel.fetch();
     }
 
     private LinearLayout createExerciseCard(Context exercisesContainerContext, ExercicioDTO exercicioDto) {

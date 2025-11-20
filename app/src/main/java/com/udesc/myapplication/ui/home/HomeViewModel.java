@@ -1,39 +1,50 @@
 package com.udesc.myapplication.ui.home;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.udesc.myapplication.DTOs.ExercicioDTO;
+import com.udesc.myapplication.DTOs.TreinoDTO;
+import com.udesc.myapplication.model.BaseViewModel;
+import com.udesc.myapplication.network.ApiService;
+import com.udesc.myapplication.network.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
-    private final MutableLiveData<List<ExercicioDTO>> mExercises;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HomeViewModel extends BaseViewModel {
+    private final MutableLiveData<List<ExercicioDTO>> mExercises = new MutableLiveData<>();
+    private ApiService apiService = RetrofitClient.getApiService();
 
     public HomeViewModel() {
-        mExercises = new MutableLiveData<>();
-        var exercises = new ArrayList<ExercicioDTO>();
-        var exerciseOne = new ExercicioDTO();
-
-        exerciseOne.setDescricao("descrição do exercício 1");
-        exerciseOne.setId(1L);
-        exerciseOne.setIdGrupoMuscular(1L);
-        exerciseOne.setNomeGrupoMuscular("Perna");
-        exerciseOne.setNome("Exercício 1");
-
-        var exerciseTwo = new ExercicioDTO();
-        exerciseTwo.setDescricao("descrição do exercício 2");
-        exerciseTwo.setId(1L);
-        exerciseTwo.setIdGrupoMuscular(1L);
-        exerciseTwo.setNomeGrupoMuscular("Perna");
-        exerciseTwo.setNome("Exercício 2");
-
-        exercises.add(exerciseOne);
-        exercises.add(exerciseTwo);
-
-        mExercises.setValue(exercises);
+        setLoading(true);
     }
 
     public MutableLiveData<List<ExercicioDTO>> getExercises() { return mExercises; }
+
+    public void fetch() {
+        apiService.exercicios().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<List<ExercicioDTO>> call, @NonNull Response<List<ExercicioDTO>> response) {
+                setLoading(false);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mExercises.setValue(response.body());
+                } else {
+                    setError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<ExercicioDTO>> call, @NonNull Throwable t) {
+                setLoading(false);
+                setError(t.getMessage());
+            }
+        });
+    }
 }

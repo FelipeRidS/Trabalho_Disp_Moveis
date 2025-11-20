@@ -42,11 +42,18 @@
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
-        <LinearLayout
-            android:id="@+id/exercises_container"
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/exercises_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
 
     </LinearLayout>
 

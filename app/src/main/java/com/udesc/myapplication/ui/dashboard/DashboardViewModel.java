@@ -1,55 +1,47 @@
 package com.udesc.myapplication.ui.dashboard;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.udesc.myapplication.DTOs.ExercicioSerieDTO;
 import com.udesc.myapplication.DTOs.TreinoDTO;
-import com.udesc.myapplication.DTOs.TreinoExercicioDTO;
+import com.udesc.myapplication.model.BaseViewModel;
+import com.udesc.myapplication.network.ApiService;
+import com.udesc.myapplication.network.RetrofitClient;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardViewModel extends ViewModel {
-    private final MutableLiveData<List<TreinoDTO>> mTrainings;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DashboardViewModel extends BaseViewModel {
+    private final MutableLiveData<List<TreinoDTO>> mTrainings = new MutableLiveData<>();
+    private ApiService apiService = RetrofitClient.getApiService();
 
     public DashboardViewModel() {
-        mTrainings = new MutableLiveData<>();
-        var trainings = new ArrayList<TreinoDTO>();
-        var trainingOne = new TreinoDTO();
-        var exercicios = new ArrayList<TreinoExercicioDTO>();
-
-        var treinoExercicioOne = new TreinoExercicioDTO();
-        var exerciciosSerie = new ArrayList<ExercicioSerieDTO>();
-
-        var exercicioSerie = new ExercicioSerieDTO();
-        exercicioSerie.setCarga(new BigDecimal(12.5));
-        exercicioSerie.setRepeticoes(3);
-        exerciciosSerie.add(exercicioSerie);
-
-        treinoExercicioOne.setSeries(exerciciosSerie);
-        exercicios.add(treinoExercicioOne);
-
-        trainingOne.setNomeTreino("Treino de peito");
-        trainingOne.setDataCriacao(LocalDate.now());
-        trainingOne.setExercicios(exercicios);
-        trainingOne.setIdTreino(1L);
-
-        var trainingTwo = new TreinoDTO();
-        trainingTwo.setNomeTreino("Treino de perna");
-        trainingTwo.setDataCriacao(LocalDate.now());
-        trainingTwo.setExercicios(new ArrayList<>());
-        trainingTwo.setIdTreino(1L);
-
-        trainings.add(trainingOne);
-        trainings.add(trainingTwo);
-
-        mTrainings.setValue(trainings);
+        setLoading(true);
     }
 
-    public MutableLiveData<List<TreinoDTO>> getTrainings() {
-        return mTrainings;
+    public MutableLiveData<List<TreinoDTO>> getTrainings() { return mTrainings; }
+
+    public void fetch() {
+        apiService.treinos().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<List<TreinoDTO>> call, @NonNull Response<List<TreinoDTO>> response) {
+                setLoading(false);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mTrainings.setValue(response.body());
+                } else {
+                    setError(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<TreinoDTO>> call, @NonNull Throwable t) {
+                setLoading(false);
+                setError(t.getMessage());
+            }
+        });
     }
 }
