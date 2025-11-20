@@ -1,6 +1,9 @@
 package com.udesc.myapplication.ui.perfil; // Ajuste o pacote conforme sua estrutura
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,12 +57,12 @@ public class PerfilFragment extends Fragment {
     }
 
     private void carregarDadosDoUsuario() {
-        // --- LÓGICA PARA BUSCAR DADOS ---
-        // A lógica aqui é a mesma: buscar de SharedPreferences, banco de dados, etc.
-        // **Exemplo Fixo (substitua pela sua lógica real):**
-        String nomeUsuario = "Felipe Nobre Gemini"; // buscarDados.getNome();
-        String emailUsuario = "felipe.gemini@example.com"; // buscarDados.getEmail();
-        String dataNascUsuario = "01/01/1990"; // buscarDados.getDataNascimento();
+
+        Activity c = getActivity();
+        SharedPreferences sp = c.getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+        String nomeUsuario = sp.getString("nome", "");
+        String emailUsuario = sp.getString("email", "");
+        String dataNascUsuario = sp.getString("dataNascimento", "");
 
         // Exibir os dados
         textViewNome.setText(nomeUsuario);
@@ -73,6 +76,15 @@ public class PerfilFragment extends Fragment {
 
         // Para mostrar um Toast, use getActivity() ou requireContext() para obter o contexto
         Toast.makeText(getActivity(), "Logout realizado com sucesso!", Toast.LENGTH_SHORT).show();
+
+        Activity c = getActivity();
+        SharedPreferences sp = c.getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.remove("id");
+        editor.remove("nome");
+        editor.remove("email");
+        editor.remove("dataNascimento");
+        editor.apply();
 
         // Redireciona para a tela de Login
         Navigator.setActivity(getActivity(), Login.class);

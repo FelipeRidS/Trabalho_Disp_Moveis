@@ -1,6 +1,8 @@
 package com.udesc.myapplication.ui.cadastrousuario;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -102,6 +104,17 @@ public class CadastroActivity extends AppCompatActivity {
         // Aqui você implementaria a lógica para salvar o usuário.
         // Por exemplo, enviar para um servidor web, salvar em um banco de dados local (SQLite),
         // ou usar o Firebase Authentication.
+
+        boolean deuCerto = true;
+        if (deuCerto) {
+            SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putLong("id", 345L); // TODO: vai vir do login
+            editor.putString("nome", nome);
+            editor.putString("email", email);
+            editor.putString("dataNascimento", dataNascimento);
+            editor.apply();
+        }
 
         // Exemplo de mensagem de sucesso:
         Toast.makeText(this, "Usuário " + nome + " cadastrado com sucesso!", Toast.LENGTH_LONG).show();

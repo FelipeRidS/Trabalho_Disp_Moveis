@@ -1,5 +1,7 @@
 package com.udesc.myapplication.ui.login;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,6 +24,11 @@ import com.udesc.myapplication.model.LoginRequest;
 import com.udesc.myapplication.model.Usuario;
 import com.udesc.myapplication.network.ApiService;
 import com.udesc.myapplication.network.RetrofitClient;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +51,14 @@ public class Login extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+        if (sp.contains("nome")) {
+            Navigator.setActivity(this, MainActivity.class);
+            return;
+        }
+
+
 
         // Inicializar views e serviço
         usuarioInptView = findViewById(R.id.editTextText4);
@@ -79,6 +95,15 @@ public class Login extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     // Sucesso no login
                     Usuario usuario = response.body();
+
+                    SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putLong("id", usuario.getId());
+                    editor.putString("nome", usuario.getNome());
+                    editor.putString("email", usuario.getEmail());
+                    editor.putString("dataNascimento", usuario.getDataNascimento().toString());
+                    editor.apply();
+
                     Toast.makeText(Login.this, "Bem-vindo, " + usuario.getNome(), Toast.LENGTH_SHORT).show();
 
                     // Navegar para a MainActivity
@@ -119,6 +144,14 @@ public class Login extends AppCompatActivity {
     public void entrarTeste(View v) {
         // Apenas navega para a tela principal, sem fazer login
         Navigator.callActivity(this, MainActivity.class);
+
+        SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong("id", 345L);
+        editor.putString("nome", "Joao testes");
+        editor.putString("email", "joao.com.br@gmail.com.br");
+        editor.putString("dataNascimento", "10/10/2010");
+        editor.apply();
 
         // Fecha a atividade de Login para que o usuário não volte para ela
         finish();
