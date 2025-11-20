@@ -40,4 +40,9 @@ public class TreinoDTO {
     public void setExercicios(List<TreinoExercicioDTO> exercicios) {
         this.exercicios = exercicios;
     }
+
+    // Método auxiliar para contar exercícios
+    public int getNumeroExercicios() {
+        return exercicios != null ? exercicios.size() : 0;
+    }
 }

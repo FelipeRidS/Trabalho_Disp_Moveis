@@ -2,10 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="20dp"
     android:background="@drawable/rounded_countainer"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/training_title"
@@ -21,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp"
         android:text="Data de criação"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray" />
@@ -29,28 +31,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_view_details"
+        <TextView
+            android:id="@+id/training_exercises_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="@string/button_view_training"
-            android:backgroundTint="@color/purple_500"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/btn_start_routine"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="@string/button_start_routine"
-            android:backgroundTint="@color/purple_500"
-            android:textColor="@color/white" />
+            android:text="0 exercícios"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_start_routine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_start_routine"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@color/white" />
 
 </LinearLayout>

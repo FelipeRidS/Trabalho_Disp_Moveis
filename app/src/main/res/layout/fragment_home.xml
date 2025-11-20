@@ -8,21 +8,23 @@
     android:foregroundGravity="center"
     android:gravity="center_horizontal"
     tools:context=".ui.home.HomeFragment">
+    
     <LinearLayout
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="match_parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/my_routines"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/my_routines" />
 
         <Space
@@ -32,8 +34,11 @@
         <ScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp">
 
             <LinearLayout
                 android:id="@+id/exercises_container"

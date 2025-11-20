@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.udesc.myapplication.DTOs.TreinoDTO;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.databinding.FragmentHomeBinding;
+import com.udesc.myapplication.helpers.DateHelpers;
 import com.udesc.myapplication.ui.treino.DetalhesTreinoActivity;
 import com.udesc.myapplication.ui.treino.IniciarTreinoActivity;
 
@@ -54,6 +55,12 @@ public class HomeFragment extends Fragment {
                     );
 
                     exercisesContainer.addView(trainingCard);
+
+                    int bottomDp = 8;
+                    int bottomPx = (int) (bottomDp * exercisesContainer.getContext().getResources().getDisplayMetrics().density + 0.5f);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(0, 0, 0, bottomPx);
+                    trainingCard.setLayoutParams(lp);
                 }
             }
         );
@@ -67,18 +74,27 @@ public class HomeFragment extends Fragment {
     private View createTrainingCard(Context context, TreinoDTO treinoDto) {
         View cardView = LayoutInflater.from(context).inflate(R.layout.training_card, null, false);
 
+        var layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.bottomMargin = 20;
+        cardView.setLayoutParams(layoutParams);
+
         TextView titleView = cardView.findViewById(R.id.training_title);
         TextView dateView = cardView.findViewById(R.id.training_date);
-        Button btnViewDetails = cardView.findViewById(R.id.btn_view_details);
+        TextView exercisesCountView = cardView.findViewById(R.id.training_exercises_count);
         Button btnStartRoutine = cardView.findViewById(R.id.btn_start_routine);
 
         titleView.setText(treinoDto.getNomeTreino());
+        
         if (treinoDto.getDataCriacao() != null) {
-            dateView.setText(treinoDto.getDataCriacao().toString());
+            dateView.setText(DateHelpers.format(treinoDto.getDataCriacao()));
         }
 
-        // Botão Ver Detalhes
-        btnViewDetails.setOnClickListener(v -> {
+        // Número de exercícios
+        int numExercicios = treinoDto.getNumeroExercicios();
+        String exerciciosText = numExercicios + " " + (numExercicios == 1 ? "exercício" : "exercícios");
+        exercisesCountView.setText(exerciciosText);
+
+        cardView.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DetalhesTreinoActivity.class);
             intent.putExtra(DetalhesTreinoActivity.EXTRA_TREINO_ID, treinoDto.getIdTreino());
             intent.putExtra(DetalhesTreinoActivity.EXTRA_TREINO_NOME, treinoDto.getNomeTreino());
@@ -86,7 +102,6 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Botão Iniciar Rotina
         btnStartRoutine.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), IniciarTreinoActivity.class);
             intent.putExtra(IniciarTreinoActivity.EXTRA_TREINO_ID, treinoDto.getIdTreino());
