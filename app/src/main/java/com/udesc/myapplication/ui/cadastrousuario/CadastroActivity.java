@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.udesc.myapplication.MainActivity;
 import com.udesc.myapplication.R;
+import com.udesc.myapplication.adapters.LocalDateAdapter;
 import com.udesc.myapplication.helpers.DateHelpers;
 import com.udesc.myapplication.helpers.Navigator;
 import com.udesc.myapplication.model.CadastroUsuario;
@@ -25,7 +28,10 @@ import com.udesc.myapplication.network.ApiService;
 import com.udesc.myapplication.network.RetrofitClient;
 import com.udesc.myapplication.ui.login.Login;
 
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,7 +45,6 @@ public class CadastroActivity extends AppCompatActivity {
     private EditText editTextSenha;
     private EditText editTextConfirmarSenha;
     private Button buttonCadastrar;
-    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,6 @@ public class CadastroActivity extends AppCompatActivity {
                 cadastrarUsuario();
             }
         });
-        apiService = RetrofitClient.getClient().create(ApiService.class);
     }
 
     private void mostrarSeletorDeData() {
@@ -117,6 +121,16 @@ public class CadastroActivity extends AppCompatActivity {
             return;
         }
 
+        if (nome.length() < 3) {
+            Toast.makeText(this, "Nome de usuário muito pequeno", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (validateEmail(email)) {
+            Toast.makeText(this, "Email inválido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // --- LÓGICA DE CADASTRO ---
         // Aqui você implementaria a lógica para salvar o usuário.
         // Por exemplo, enviar para um servidor web, salvar em um banco de dados local (SQLite),
@@ -129,28 +143,28 @@ public class CadastroActivity extends AppCompatActivity {
         usuarioCadastro.setSenha(senha);
         setLoading(true);
 
-        String a = new Gson().toJson(usuarioCadastro);
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+
+        String a = gson.toJson(usuarioCadastro);
         Log.d("tag", a);
 
-        apiService.cadastroUsuario(usuarioCadastro).enqueue(new Callback<Usuario>() {
+        RetrofitClient.getApiService().cadastroUsuario(usuarioCadastro).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
-                // Reabilitar UI
-                setLoading(false);
-                Log.d("tag", "hmmmm");
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("tag", "hmmmm2");
                     // Sucesso no login
                     Usuario usuario = response.body();
-                    Log.d("tag", usuario.toString());
 
                     SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putLong("id", usuario.getId());
                     editor.putString("nome", usuario.getNome());
                     editor.putString("email", usuario.getEmail());
-                    editor.putString("dataNascimento", usuario.getDataNascimento().toString());
+                    editor.putString("dataNascimento", DateHelpers.format(usuario.getDataNascimento()));
                     editor.apply();
 
                     Toast.makeText(CadastroActivity.this, "Bem-vindo, " + usuario.getNome(), Toast.LENGTH_SHORT).show();
@@ -158,10 +172,12 @@ public class CadastroActivity extends AppCompatActivity {
                     // Navegar para a MainActivity
                     Navigator.setActivity(CadastroActivity.this, MainActivity.class);
                     finish(); // Fecha a atividade de Login
+                    Toast.makeText(CadastroActivity.this, "Usuário " + nome + " cadastrado com sucesso!", Toast.LENGTH_LONG).show();
                 } else {
                     // Falha no login (ex: 401 Não Autorizado)
-                    Toast.makeText(CadastroActivity.this, "Usuário ou senha inválidos", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CadastroActivity.this, response.message(), Toast.LENGTH_LONG).show();
                 }
+                setLoading(false);
             }
 
             @Override
@@ -175,7 +191,6 @@ public class CadastroActivity extends AppCompatActivity {
         });
 
         // Exemplo de mensagem de sucesso:
-        Toast.makeText(this, "Usuário " + nome + " cadastrado com sucesso!", Toast.LENGTH_LONG).show();
 
         // Opcional: Após o cadastro, você pode limpar os campos ou fechar a tela
         // finish();
@@ -190,5 +205,11 @@ public class CadastroActivity extends AppCompatActivity {
         editTextDataNascimento.setEnabled(!isLoading);
         editTextSenha.setEnabled(!isLoading);
         editTextConfirmarSenha.setEnabled(!isLoading);
+    }
+
+    private boolean validateEmail(String email) {
+        String pattern = "[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}";
+        Matcher matcher = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(email);
+        return !matcher.find();
     }
 }
