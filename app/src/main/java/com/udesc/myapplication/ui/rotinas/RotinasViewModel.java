@@ -1,4 +1,6 @@
-package com.udesc.myapplication.ui.home;
+package com.udesc.myapplication.ui.rotinas;
+
+import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -13,9 +15,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeViewModel extends BaseViewModel {
+public class RotinasViewModel extends BaseViewModel {
     private final MutableLiveData<List<TreinoDTO>> mTrainings = new MutableLiveData<>();
-    public HomeViewModel() {
+    public RotinasViewModel(@NonNull Application application) {
+        super(application);
         setLoading(true);
 
         RetrofitClient.getApiService().treinos().enqueue(new Callback<List<TreinoDTO>>() {

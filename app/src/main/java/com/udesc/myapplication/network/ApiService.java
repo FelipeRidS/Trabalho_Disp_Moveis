@@ -30,8 +30,11 @@ public interface ApiService {
     @GET("treino/{id}")
     Call<TreinoDTO> treinoPorId(@Path("id") Long id);
 
-    @GET("execucao-treino")
-    Call<List<ExecucaoTreinoDTO>> execucaoTreinos();
+    @GET("execucao-treino/usuario/{usuarioId}")
+    Call<List<ExecucaoTreinoDTO>> execucaoTreinos(@Path("usuarioId") Long id);
+
+    @GET("execucao-treino/{id}")
+    Call<ExecucaoTreinoDTO> execucaoTreinoPorId(@Path("id") Long id);
 
     @POST("execucao-treino")
     Call<ExecucaoTreinoDTO> criarExecucaoTreino(@Body ExecucaoTreinoDTO execucao);

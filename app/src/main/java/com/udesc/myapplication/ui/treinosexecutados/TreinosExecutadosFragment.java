@@ -1,8 +1,11 @@
-package com.udesc.myapplication.ui.dashboard;
+package com.udesc.myapplication.ui.treinosexecutados;
 
+import android.app.Activity;
 import android.content.Context;
 
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.MediaCodec;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,17 +23,18 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.udesc.myapplication.DTOs.ExecucaoTreinoDTO;
 import com.udesc.myapplication.R;
-import com.udesc.myapplication.databinding.FragmentDashboardBinding;
+import com.udesc.myapplication.databinding.FragmentTreinosExecutadosBinding;
 import com.udesc.myapplication.helpers.DateHelpers;
+import com.udesc.myapplication.helpers.Navigator;
 
 import java.math.BigDecimal;
 
-public class DashboardFragment extends Fragment {
+public class TreinosExecutadosFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentTreinosExecutadosBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentTreinosExecutadosBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -38,11 +42,11 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        TreinosExecutadosViewModel treinosExecutadosViewModel = new ViewModelProvider(this).get(TreinosExecutadosViewModel.class);
 
         final LinearLayout layout = binding.dashboardLayout;
 
-        dashboardViewModel.getTrainings().observe(
+        treinosExecutadosViewModel.getTrainings().observe(
             getViewLifecycleOwner(),
             trainings -> {
                 for (var training : trainings) {
@@ -51,7 +55,7 @@ public class DashboardFragment extends Fragment {
             }
         );
 
-        dashboardViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+        treinosExecutadosViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
             Log.e("DashboardFragment", errorMessage);
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         });
@@ -81,6 +85,7 @@ public class DashboardFragment extends Fragment {
         viewTrainingButton.setText(R.string.button_view_training);
         viewTrainingButton.setBackgroundTintList(res.getColorStateList(R.color.purple_500, context.getTheme()));
         viewTrainingButton.setTextColor(res.getColorStateList(R.color.white, context.getTheme()));
+        viewTrainingButton.setOnClickListener(v -> gotoDetalhesExecucao(trainingDto));
 
         var detailsLayout = createDetailsLayout(context, trainingDto);
 
@@ -155,5 +160,11 @@ public class DashboardFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void gotoDetalhesExecucao(ExecucaoTreinoDTO trainingDto) {
+        Bundle b = new Bundle();
+        b.putLong("treinoExecutadoId", trainingDto.getIdExecucaoTreino());
+        Navigator.callActivity(getContext(), DetalhesTreinoExecutadoActivity.class, b);
     }
 }

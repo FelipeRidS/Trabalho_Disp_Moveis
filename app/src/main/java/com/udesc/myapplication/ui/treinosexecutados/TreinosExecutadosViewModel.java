@@ -1,4 +1,8 @@
-package com.udesc.myapplication.ui.dashboard;
+package com.udesc.myapplication.ui.treinosexecutados;
+
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -13,13 +17,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DashboardViewModel extends BaseViewModel {
+public class TreinosExecutadosViewModel extends BaseViewModel {
     private final MutableLiveData<List<ExecucaoTreinoDTO>> mTrainings = new MutableLiveData<>();
 
-    public DashboardViewModel() {
+    public TreinosExecutadosViewModel(@NonNull Application application) {
+        super(application);
         setLoading(true);
 
-        RetrofitClient.getApiService().execucaoTreinos().enqueue(new Callback<>() {
+        Context c = getApplication();
+        SharedPreferences sp = c.getSharedPreferences("Usuario", Context.MODE_PRIVATE);
+        getApplication();
+        RetrofitClient.getApiService().execucaoTreinos(sp.getLong("id", 0L)).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Response<List<ExecucaoTreinoDTO>> response) {
                 setLoading(false);

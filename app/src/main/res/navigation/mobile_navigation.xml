@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.udesc.myapplication.ui.home.HomeFragment"
+        android:name="com.udesc.myapplication.ui.rotinas.RotinasFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_rotinas" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.udesc.myapplication.ui.dashboard.DashboardFragment"
+        android:name="com.udesc.myapplication.ui.treinosexecutados.TreinosExecutadosFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_treinos_executados" />
 
     <fragment
         android:id="@+id/navigation_notifications"

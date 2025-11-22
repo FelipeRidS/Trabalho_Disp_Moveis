@@ -46,6 +46,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.treinosexecutados.DetalhesTreinoExecutadoActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.treino.IniciarTreinoActivity"
             android:exported="false" />
     </application>

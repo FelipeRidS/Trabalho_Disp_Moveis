@@ -1,4 +1,4 @@
-package com.udesc.myapplication.ui.home;
+package com.udesc.myapplication.ui.rotinas;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,17 +19,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.udesc.myapplication.DTOs.TreinoDTO;
 import com.udesc.myapplication.R;
-import com.udesc.myapplication.databinding.FragmentHomeBinding;
+import com.udesc.myapplication.databinding.FragmentRotinasBinding;
 import com.udesc.myapplication.helpers.DateHelpers;
 import com.udesc.myapplication.ui.treino.DetalhesTreinoActivity;
 import com.udesc.myapplication.ui.treino.IniciarTreinoActivity;
 
-public class HomeFragment extends Fragment {
+public class RotinasFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentRotinasBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentRotinasBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        var viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        var viewModel = new ViewModelProvider(this).get(RotinasViewModel.class);
         var res = getResources();
 
         final TextView myRoutinesTextView = binding.myRoutines;
