@@ -22,11 +22,15 @@ public class TreinosExecutadosViewModel extends BaseViewModel {
 
     public TreinosExecutadosViewModel(@NonNull Application application) {
         super(application);
+        loadTrainings();
+    }
+
+    public void loadTrainings() {
         setLoading(true);
 
         Context c = getApplication();
         SharedPreferences sp = c.getSharedPreferences("Usuario", Context.MODE_PRIVATE);
-        getApplication();
+        
         RetrofitClient.getApiService().execucaoTreinos(sp.getLong("id", 0L)).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<ExecucaoTreinoDTO>> call, @NonNull Response<List<ExecucaoTreinoDTO>> response) {
@@ -47,5 +51,7 @@ public class TreinosExecutadosViewModel extends BaseViewModel {
         });
     }
 
-    public MutableLiveData<List<ExecucaoTreinoDTO>> getTrainings() { return mTrainings; }
+    public MutableLiveData<List<ExecucaoTreinoDTO>> getTrainings() { 
+        return mTrainings; 
+    }
 }

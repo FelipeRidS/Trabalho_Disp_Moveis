@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 public class TreinosExecutadosFragment extends Fragment {
 
     private FragmentTreinosExecutadosBinding binding;
+    private TreinosExecutadosViewModel treinosExecutadosViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTreinosExecutadosBinding.inflate(inflater, container, false);
@@ -42,13 +43,15 @@ public class TreinosExecutadosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TreinosExecutadosViewModel treinosExecutadosViewModel = new ViewModelProvider(this).get(TreinosExecutadosViewModel.class);
+        treinosExecutadosViewModel = new ViewModelProvider(this).get(TreinosExecutadosViewModel.class);
 
         final LinearLayout layout = binding.dashboardLayout;
 
         treinosExecutadosViewModel.getTrainings().observe(
             getViewLifecycleOwner(),
             trainings -> {
+                layout.removeAllViews();
+
                 for (var training : trainings) {
                     layout.addView(createTrainingCard(layout.getContext(), training));
                 }
@@ -59,6 +62,15 @@ public class TreinosExecutadosFragment extends Fragment {
             Log.e("DashboardFragment", errorMessage);
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Recarregar os treinos sempre que voltar para esta tela
+        if (treinosExecutadosViewModel != null) {
+            treinosExecutadosViewModel.loadTrainings();
+        }
     }
 
     private LinearLayout createTrainingCard(Context trainingsContainerContext, ExecucaoTreinoDTO trainingDto) {
