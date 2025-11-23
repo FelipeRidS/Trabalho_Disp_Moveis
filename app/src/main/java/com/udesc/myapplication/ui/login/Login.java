@@ -130,21 +130,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void entrarTeste(View v) {
-        // Apenas navega para a tela principal, sem fazer login
-        Navigator.callActivity(this, MainActivity.class);
-
-        SharedPreferences sp = getSharedPreferences("Usuario", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putLong("id", 345L);
-        editor.putString("nome", "Joao testes");
-        editor.putString("email", "joao.com.br@gmail.com.br");
-        editor.putString("dataNascimento", "10/10/2010");
-        editor.apply();
-
-        finish();
-    }
-
     public void cadastroUsuario(View v) {
         Navigator.callActivity(this, CadastroActivity.class);
     }
