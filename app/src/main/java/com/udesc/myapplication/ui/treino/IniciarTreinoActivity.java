@@ -1,14 +1,10 @@
 package com.udesc.myapplication.ui.treino;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +27,6 @@ import com.udesc.myapplication.DTOs.TreinoExercicioDTO;
 import com.udesc.myapplication.DTOs.ExercicioSerieDTO;
 import com.udesc.myapplication.R;
 import com.udesc.myapplication.network.RetrofitClient;
-import com.udesc.myapplication.services.TreinoTimerService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,9 +51,9 @@ public class IniciarTreinoActivity extends AppCompatActivity {
     private Button btnFinalizar;
     private ProgressBar progressBar;
 
-    private TreinoTimerService timerService;
-    private boolean isBound = false;
     private Handler handler = new Handler();
+    private long startTime = 0;
+    private boolean timerRunning = false;
 
     private Long treinoId;
     private String treinoNome;
@@ -78,18 +73,14 @@ public class IniciarTreinoActivity extends AppCompatActivity {
         }
     }
 
-    private final ServiceConnection connection = new ServiceConnection() {
+    private final Runnable timerRunnable = new Runnable() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            TreinoTimerService.LocalBinder binder = (TreinoTimerService.LocalBinder) service;
-            timerService = binder.getService();
-            isBound = true;
-            updateTimer();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
+        public void run() {
+            if (timerRunning) {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                timerView.setText(formatTime(elapsedTime));
+                handler.postDelayed(this, 1000);
+            }
         }
     };
 
@@ -117,22 +108,30 @@ public class IniciarTreinoActivity extends AppCompatActivity {
         titleView.setText(treinoNome);
         dataHoraInicio = LocalDateTime.now();
 
-        // Iniciar serviço de timer
-        Intent serviceIntent = new Intent(this, TreinoTimerService.class);
-        serviceIntent.putExtra("treino_nome", treinoNome);
-        startService(serviceIntent);
-        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
+        // Iniciar timer simples
+        startTimer();
 
         btnFinalizar.setOnClickListener(v -> finalizarTreino());
 
         carregarDadosTreino();
     }
 
-    private void updateTimer() {
-        if (isBound && timerService != null) {
-            timerView.setText(timerService.getFormattedTime());
-            handler.postDelayed(this::updateTimer, 1000);
-        }
+    private void startTimer() {
+        startTime = System.currentTimeMillis();
+        timerRunning = true;
+        handler.post(timerRunnable);
+    }
+
+    private void stopTimer() {
+        timerRunning = false;
+        handler.removeCallbacks(timerRunnable);
+    }
+
+    private String formatTime(long millis) {
+        long seconds = (millis / 1000) % 60;
+        long minutes = (millis / (1000 * 60)) % 60;
+        long hours = millis / (1000 * 60 * 60);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     private void carregarDadosTreino() {
@@ -363,7 +362,7 @@ public class IniciarTreinoActivity extends AppCompatActivity {
                 
                 if (response.isSuccessful()) {
                     Toast.makeText(IniciarTreinoActivity.this, "Treino finalizado com sucesso!", Toast.LENGTH_SHORT).show();
-                    pararTimer();
+                    stopTimer();
                     finish();
                 } else {
                     Toast.makeText(IniciarTreinoActivity.this, "Erro ao finalizar treino", Toast.LENGTH_SHORT).show();
@@ -381,24 +380,26 @@ public class IniciarTreinoActivity extends AppCompatActivity {
         });
     }
 
-    private void pararTimer() {
-        if (isBound) {
-            unbindService(connection);
-            isBound = false;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Pausar timer quando a tela não estiver visível
+        stopTimer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Retomar timer quando voltar para a tela
+        if (startTime > 0) {
+            timerRunning = true;
+            handler.post(timerRunnable);
         }
-        if (timerService != null) {
-            timerService.stopTimer();
-        }
-        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isBound) {
-            unbindService(connection);
-            isBound = false;
-        }
-        handler.removeCallbacksAndMessages(null);
+        stopTimer();
     }
 }
